@@ -23,6 +23,7 @@ function Create() {
   var [uploadedFile, setUploadedFile] = React.useState([]);
   var [description, setDescription] = React.useState("");
   var [postCreated, setPostCreated] = React.useState(false);
+  var [currentSelectedImage, setCurrentSelectedImage] = React.useState("");
 
   // protectRoute
   // Protecting the route from unathorized access
@@ -32,6 +33,31 @@ function Create() {
   // publish loading icon
   var [loading, setLoading] = React.useState(false);
   const navigate = useNavigate();
+
+  // ============
+  // uploadedFile
+  // ============
+  function handleMouseEnterFile(filenameData) {
+    setCurrentSelectedImage(filenameData);
+  }
+
+  function handleMouseLeaveFile() {
+    setCurrentSelectedImage("");
+  }
+
+  function handleClickDeleteFile(filenameData) {
+    var uploadedFileCreateCopy = [...uploadedFile];
+    for (var i = 0; i < uploadedFile.length; i++) {
+      if (uploadedFile[i]["name"] === filenameData) {
+        uploadedFileCreateCopy.splice(i, 1);
+        return setUploadedFile(uploadedFileCreateCopy);
+      }
+    }
+  }
+
+  function handleClickBenblog() {
+    navigate("/");
+  }
 
   function handleClickCancel() {
     navigate("/");
@@ -104,7 +130,31 @@ function Create() {
 
   return (
     <>
-      <AppNavBar title="BENBLOG" />
+      <Grid
+        overrides={{
+          Grid: {
+            style: {
+              display: "flex",
+              justifyContent: "center",
+            },
+          },
+        }}
+      >
+        <Cell span={8}>
+          <h1
+            style={{
+              cursor: "pointer",
+              marginBottom: "1px",
+              fontFamily: "Montserrat",
+              color: "gray",
+            }}
+            onClick={handleClickBenblog}
+          >
+            BENBLOG
+          </h1>
+        </Cell>
+      </Grid>
+
       {/* Notification */}
       <Grid
         overrides={{
@@ -151,6 +201,7 @@ function Create() {
             <FormControl label="Title">
               <Input
                 type="text"
+                required
                 value={title}
                 onChange={(e) => setTitle(e.currentTarget.value)}
               />
@@ -204,10 +255,46 @@ function Create() {
             <Cell span={2}>
               <Card
                 overrides={{
+                  Root: {
+                    style: {
+                      paddingTop: "15px",
+                      paddingLeft: "15px",
+                      paddingRight: "15px",
+                    },
+                  },
+                  Body: {
+                    style: {
+                      display: "flex",
+                      justifyContent: "center",
+                      padding: "0",
+                      margin: "0",
+                    },
+                  },
+                  Contents: {
+                    style: {
+                      padding: "0",
+                      margin: "5px",
+                    },
+                  },
                   HeaderImage: { style: { height: "auto" } },
                 }}
                 headerImage={URL.createObjectURL(showUploadedFile)}
-              ></Card>
+                onMouseEnter={function () {
+                  handleMouseEnterFile(showUploadedFile["name"]);
+                }}
+                onMouseLeave={handleMouseLeaveFile}
+              >
+                {currentSelectedImage === showUploadedFile["name"] && (
+                  <span
+                    style={{ color: "red", cursor: "pointer" }}
+                    onClick={function () {
+                      handleClickDeleteFile(showUploadedFile["name"]);
+                    }}
+                  >
+                    DELETE
+                  </span>
+                )}
+              </Card>
             </Cell>
           ))}
 
@@ -223,6 +310,7 @@ function Create() {
                     },
                   },
                 }}
+                required
                 value={description}
                 onChange={(e) => setDescription(e.currentTarget.value)}
               />
@@ -244,19 +332,22 @@ function Create() {
               {loading === false ? (
                 "PUBLISH"
               ) : (
-                <Spinner
-                  overrides={{
-                    ActivePath: {
-                      style: { fill: "white" },
-                    },
-                    Svg: {
-                      style: {
-                        width: "20px",
-                        height: "16px",
+                <>
+                  <Spinner
+                    overrides={{
+                      ActivePath: {
+                        style: { fill: "white" },
                       },
-                    },
-                  }}
-                />
+                      Svg: {
+                        style: {
+                          width: "20px",
+                          height: "16px",
+                        },
+                      },
+                    }}
+                  />
+                  <span style={{ marginLeft: "5px" }}>Please wait</span>
+                </>
               )}
             </Button>
           </Cell>

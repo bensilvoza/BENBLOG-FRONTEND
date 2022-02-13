@@ -98,7 +98,18 @@ function Edit() {
     formData.append("date", date);
     formData.append("readTime", readTime);
     formData.append("description", description);
-    formData.append("uploadedFileOriginal", uploadedFileOriginal);
+    // string, in order for the backend easier to read
+    var uploadedFileOriginalintoString = "";
+    for (var i = 0; i < uploadedFileOriginal.length; i++) {
+      uploadedFileOriginalintoString =
+        uploadedFileOriginalintoString + uploadedFileOriginal[i]["filename"];
+
+      if (i + 1 !== uploadedFileOriginal.length) {
+        uploadedFileOriginalintoString = uploadedFileOriginalintoString + " ";
+      }
+    }
+
+    formData.append("uploadedFileOriginal", uploadedFileOriginalintoString);
     for (let i = 0; i < uploadedFile.length; i++) {
       formData.append(`uploadedFile`, uploadedFile[i]);
     }
@@ -115,22 +126,7 @@ function Edit() {
     );
 
     if (send["data"] === "Post updated") {
-      setPostUpdated("Post successfully updated");
-
-      // adding setTimeout
-      // setTimeout is asynchronous
-      setTimeout(function () {
-        setLoading(false);
-        setPostUpdated(false);
-      }, 5000);
-
-      // scroll window to top
-      window.scrollTo(0, 0);
-
-      setTitle("");
-      setReadTime("");
-
-      setDescription("");
+      navigate("/post/" + id);
     }
   }
 

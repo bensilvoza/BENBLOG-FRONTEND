@@ -4,7 +4,14 @@ import { useNavigate } from "react-router-dom";
 import { Grid, Cell } from "baseui/layout-grid";
 import { Avatar } from "baseui/avatar";
 import { AppNavBar } from "baseui/app-nav-bar";
-import { H1, H2, Label2, Paragraph1, Paragraph2 } from "baseui/typography";
+import {
+  H1,
+  H2,
+  Label2,
+  Label4,
+  Paragraph1,
+  Paragraph2,
+} from "baseui/typography";
 import { FormControl } from "baseui/form-control";
 import { Textarea } from "baseui/textarea";
 import { Input } from "baseui/input";
@@ -15,6 +22,8 @@ function Posts() {
   var [posts, setPosts] = React.useState([]);
   var [mouseEnter, setMouseEnter] = React.useState(false);
   var [currentTitle, setCurrentTitle] = React.useState("");
+  var [query, setQuery] = React.useState("");
+  var [searchBox, setSearchBox] = React.useState(false);
 
   // protectRoute
   // Protecting the route from unathorized access
@@ -34,6 +43,42 @@ function Posts() {
 
   function handleClickTitle(id) {
     navigate("/post/" + id);
+  }
+
+  function handleClickCreate() {
+    if (localStorage.getItem("user") === "undefined") {
+      navigate("/login");
+    } else {
+      navigate("/posts/create");
+    }
+  }
+
+  function handleClickLogout() {
+    localStorage.setItem("user", undefined);
+    navigate("/login");
+  }
+
+  function handleClickSearchIcon() {
+    if (searchBox === true) {
+      setSearchBox(false);
+      setQuery("");
+    } else {
+      setSearchBox(true);
+    }
+  }
+
+  function handleSearchSubmit(e) {
+    e.preventDefault();
+    var postsCopy = [...posts];
+    for (var i = 0; i < postsCopy.length; i++) {
+      if (postsCopy[i]["title"].toLowerCase().includes(query.toLowerCase())) {
+        postsCopy.unshift(postsCopy[i]);
+        postsCopy.splice(i + 1, 1);
+        break;
+      }
+    }
+
+    setPosts(postsCopy);
   }
 
   React.useEffect(async function () {
@@ -56,16 +101,19 @@ function Posts() {
         }}
       >
         <Cell span={8}>
-          <h1
-            style={{
-              cursor: "pointer",
-              marginBottom: "1px",
-              fontFamily: "Montserrat",
-              color: "gray",
-            }}
-          >
-            BENBLOG
-          </h1>
+          <div>
+            <h1
+              style={{
+                cursor: "pointer",
+                marginBottom: "1px",
+                fontFamily: "Montserrat",
+                color: "gray",
+                display: "inline",
+              }}
+            >
+              BENBLOG
+            </h1>
+          </div>
 
           <br />
           <br />
@@ -100,6 +148,65 @@ function Posts() {
           },
         }}
       >
+        <Cell span={8}>
+          <div style={{ display: "inline" }}>
+            <p
+              style={{
+                display: "inline",
+                fontFamily: "Open Sans",
+                fontSize: "25px",
+                fontWeight: "100",
+                color: "gray",
+                marginRight: "20px",
+                cursor: "pointer",
+              }}
+              onClick={handleClickCreate}
+            >
+              <i class="bi bi-plus-square"></i>
+              Create
+            </p>
+            <p
+              style={{
+                display: "inline",
+                fontFamily: "Open Sans",
+                fontSize: "25px",
+                fontWeight: "100",
+                color: "gray",
+                marginRight: "20px",
+                cursor: "pointer",
+              }}
+              onClick={handleClickSearchIcon}
+            >
+              <i class="bi bi-search"></i>
+              Search
+            </p>
+
+            <p
+              style={{
+                display: "inline",
+                fontFamily: "Open Sans",
+                fontSize: "25px",
+                fontWeight: "100",
+                color: "gray",
+                cursor: "pointer",
+              }}
+              onClick={handleClickLogout}
+            >
+              <i class="bi bi-archive"></i>
+              LOGOUT
+            </p>
+          </div>
+          {searchBox && (
+            <form onSubmit={handleSearchSubmit}>
+              <Input
+                value={query}
+                onChange={(e) => setQuery(e.currentTarget.value)}
+                placeholder="search here"
+              />
+            </form>
+          )}
+        </Cell>
+
         <Cell span={8}>
           {posts.map((p) => (
             <>

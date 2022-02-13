@@ -1,6 +1,8 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import App from "./App";
+import "font-awesome/css/font-awesome.min.css";
+import "bootstrap-icons/font/bootstrap-icons.css";
 import * as serviceWorker from "./serviceWorker";
 
 import { Client as Styletron } from "styletron-engine-atomic";

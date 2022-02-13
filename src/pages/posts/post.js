@@ -14,8 +14,7 @@ import { Notification } from "baseui/notification";
 
 function Post() {
   var [post, setPost] = React.useState({});
-  // default value index 0
-  var [currentImageIndex, setCurrentImageIndex] = React.useState(0);
+  var [currentImageIndex, setCurrentImageIndex] = React.useState(undefined);
   var { id } = useParams();
 
   // protectRoute
@@ -37,6 +36,16 @@ function Post() {
     navigate("/post/edit/" + id);
   }
 
+  async function handleClickDelete() {
+    // delete post
+    await axios.get(`http://localhost:5000/${protectRoute}/post/delete/` + id);
+    navigate("/");
+  }
+
+  function handleClickBenblog() {
+    navigate("/");
+  }
+
   React.useEffect(async function () {
     // original address ==> "/post/:id"
     var getData = await axios.get(
@@ -45,6 +54,17 @@ function Post() {
 
     setPost(getData["data"]);
   }, []);
+
+  React.useEffect(
+    async function () {
+      if (Object.keys(post).length !== 0) {
+        if (post["uploadedFile"].length !== 0) {
+          setCurrentImageIndex(0);
+        }
+      }
+    },
+    [post]
+  );
 
   return (
     <>
@@ -66,6 +86,7 @@ function Post() {
               fontFamily: "Montserrat",
               color: "gray",
             }}
+            onClick={handleClickBenblog}
           >
             BENBLOG
           </h1>
@@ -104,14 +125,20 @@ function Post() {
             </h1>
             <span
               style={{
-                color: "gray",
+                color: "lightgray",
                 fontSize: "30px",
                 paddingTop: "20px",
-                cursor: "pointer",
               }}
-              onClick={handleClickEdit}
             >
-              &#9998;
+              <span style={{ cursor: "pointer" }} onClick={handleClickEdit}>
+                &#9998;
+              </span>
+              <span
+                style={{ marginLeft: "10px", cursor: "pointer" }}
+                onClick={handleClickDelete}
+              >
+                <i class="bi bi-trash"></i>
+              </span>
             </span>
           </div>
           <Paragraph2 color={"gray"} marginTop={"2px"} marginBottom={"2px"}>
@@ -119,7 +146,7 @@ function Post() {
           </Paragraph2>
         </Cell>
 
-        {post["uploadedFile"] !== undefined && (
+        {currentImageIndex !== undefined && (
           <Cell
             overrides={{
               Cell: {

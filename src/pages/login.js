@@ -27,6 +27,10 @@ function Login() {
     navigate("/register");
   }
 
+  function handleClickBenblog() {
+    navigate("/");
+  }
+
   function handleSubmit(e) {
     e.preventDefault();
     for (var i = 0; i < users.length; i++) {
@@ -62,7 +66,31 @@ function Login() {
 
   return (
     <>
-      <AppNavBar title="BENSTORE" />
+      <Grid
+        overrides={{
+          Grid: {
+            style: {
+              display: "flex",
+              justifyContent: "center",
+            },
+          },
+        }}
+      >
+        <Cell span={6}>
+          <h1
+            style={{
+              cursor: "pointer",
+              marginBottom: "1px",
+              fontFamily: "Montserrat",
+              color: "gray",
+            }}
+            onClick={handleClickBenblog}
+          >
+            BENBLOG
+          </h1>
+        </Cell>
+      </Grid>
+
       {/* Notification */}
       <Grid
         overrides={{

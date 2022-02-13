@@ -24,6 +24,10 @@ function Register() {
   var protectRoute = process.env.REACT_APP_PROTECT_ROUTE;
   const navigate = useNavigate();
 
+  function handleClickBenblog() {
+    navigate("/");
+  }
+
   async function handleSubmit(e) {
     e.preventDefault();
 
@@ -88,7 +92,30 @@ function Register() {
 
   return (
     <>
-      <AppNavBar title="BENSTORE" />
+      <Grid
+        overrides={{
+          Grid: {
+            style: {
+              display: "flex",
+              justifyContent: "center",
+            },
+          },
+        }}
+      >
+        <Cell span={6}>
+          <h1
+            style={{
+              cursor: "pointer",
+              marginBottom: "1px",
+              fontFamily: "Montserrat",
+              color: "gray",
+            }}
+            onClick={handleClickBenblog}
+          >
+            BENBLOG
+          </h1>
+        </Cell>
+      </Grid>
 
       {/* Notification */}
       <Grid
