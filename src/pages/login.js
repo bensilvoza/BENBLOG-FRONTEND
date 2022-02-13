@@ -137,6 +137,7 @@ function Login() {
             <FormControl label="Email">
               <Input
                 type="email"
+                required
                 value={email}
                 onChange={(e) => setEmail(e.currentTarget.value)}
               />
@@ -145,6 +146,7 @@ function Login() {
             <FormControl label="Password">
               <Input
                 type="password"
+                required
                 value={password}
                 onChange={(e) => setPassword(e.currentTarget.value)}
               />

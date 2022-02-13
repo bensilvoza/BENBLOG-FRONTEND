@@ -161,6 +161,7 @@ function Register() {
             <FormControl label="Name">
               <Input
                 type="text"
+                required
                 value={name}
                 onChange={(e) => setName(e.currentTarget.value)}
               />
@@ -169,6 +170,7 @@ function Register() {
             <FormControl label="Email">
               <Input
                 type="email"
+                required
                 value={email}
                 onChange={(e) => setEmail(e.currentTarget.value)}
               />

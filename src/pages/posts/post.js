@@ -123,23 +123,25 @@ function Post() {
             >
               {post["title"]}
             </h1>
-            <span
-              style={{
-                color: "lightgray",
-                fontSize: "30px",
-                paddingTop: "20px",
-              }}
-            >
-              <span style={{ cursor: "pointer" }} onClick={handleClickEdit}>
-                &#9998;
-              </span>
+            {localStorage.getItem("user") === post["author"] && (
               <span
-                style={{ marginLeft: "10px", cursor: "pointer" }}
-                onClick={handleClickDelete}
+                style={{
+                  color: "lightgray",
+                  fontSize: "30px",
+                  paddingTop: "20px",
+                }}
               >
-                <i class="bi bi-trash"></i>
+                <span style={{ cursor: "pointer" }} onClick={handleClickEdit}>
+                  &#9998;
+                </span>
+                <span
+                  style={{ marginLeft: "10px", cursor: "pointer" }}
+                  onClick={handleClickDelete}
+                >
+                  <i class="bi bi-trash"></i>
+                </span>
               </span>
-            </span>
+            )}
           </div>
           <Paragraph2 color={"gray"} marginTop={"2px"} marginBottom={"2px"}>
             {post["date"]} &#8226; {post["readTime"]}
