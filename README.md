@@ -1,5 +1,5 @@
 
-#BENBLOG
+# BENBLOG
 
 Blog application for people who enjoy reading news, articles, culture, and events.
 The site runs on Express Framework on the back-end. The project contains all the
@@ -14,4 +14,4 @@ Express provides a thin layer of fundamental web application features, without o
 
 
 with love,
-#Ben
+# Ben
