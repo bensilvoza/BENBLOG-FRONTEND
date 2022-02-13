@@ -17,7 +17,11 @@ function Register() {
   var [password, setPassword] = React.useState("");
   var [confirmPassword, setConfirmPassword] = React.useState("");
   var [errorMessage, setErrorMessage] = React.useState(false);
-  var apiEndpointCheckpoint = process.env.REACT_APP_API_ENDPOINT_CHECKPOINT;
+
+  // protectRoute
+  // Protecting the route from unathorized access
+  // adding checkpoint in endpoint
+  var protectRoute = process.env.REACT_APP_PROTECT_ROUTE;
   const navigate = useNavigate();
 
   async function handleSubmit(e) {
@@ -59,13 +63,18 @@ function Register() {
       email: email,
       password: md5(password),
     };
+
+    // original address ==> "/register"
     var send = await axios.post(
-      `http://localhost:5000/register/${apiEndpointCheckpoint}`,
+      `http://localhost:5000/${protectRoute}/register`,
       data
     );
 
     // user was successfully registered
     if (send["data"] === "User registered") {
+      // message to localStorage
+      localStorage.setItem("dontStoreSensitiveInformationInlocalStorage", true);
+
       // one-way storing technique
       localStorage.setItem("accountRegisteredHelper", true);
 

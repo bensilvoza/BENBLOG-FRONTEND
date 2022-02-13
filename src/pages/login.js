@@ -16,7 +16,11 @@ function Login() {
   var [email, setEmail] = React.useState("");
   var [password, setPassword] = React.useState("");
   var [accountRegistered, setAccountRegistered] = React.useState(false);
-  var apiEndpointCheckpoint = process.env.REACT_APP_API_ENDPOINT_CHECKPOINT;
+
+  // protectRoute
+  // Protecting the route from unathorized access
+  // adding checkpoint in endpoint
+  var protectRoute = process.env.REACT_APP_PROTECT_ROUTE;
   const navigate = useNavigate();
 
   function handleClickCreateAccount() {
@@ -28,9 +32,10 @@ function Login() {
     for (var i = 0; i < users.length; i++) {
       if (users[i]["email"] === email) {
         if (users[i]["password"] === md5(password)) {
-          navigate("/");
+          localStorage.setItem("user", users[i]["name"]);
+          return navigate("/");
         } else {
-          navigate("/login");
+          return navigate("/login");
         }
       }
     }
@@ -48,8 +53,9 @@ function Login() {
     // end, account succesfully registered
 
     // communicate to backend and get all users
+    // original address ==> "/register"
     var getUsers = await axios.get(
-      `http://localhost:5000/register/${apiEndpointCheckpoint}`
+      `http://localhost:5000/${protectRoute}/register`
     );
     setUsers(getUsers["data"]);
   }, []);
