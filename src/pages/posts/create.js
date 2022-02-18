@@ -14,6 +14,8 @@ import { Button, KIND } from "baseui/button";
 import { Notification } from "baseui/notification";
 import { Spinner } from "baseui/spinner";
 
+import { CreatePostSubmitContext } from "../../contexts/createPostSubmitContext";
+
 function Create() {
   var [title, setTitle] = React.useState("");
   var [date, setDate] = React.useState("");
@@ -24,15 +26,20 @@ function Create() {
   var [description, setDescription] = React.useState("");
   var [postCreated, setPostCreated] = React.useState(false);
   var [currentSelectedImage, setCurrentSelectedImage] = React.useState("");
+  var [postCreatedHelperId, setPostCreatedHelperId] = React.useState(null);
 
   // protectRoute
   // Protecting the route from unathorized access
   // adding checkpoint in endpoint
   var protectRoute = process.env.REACT_APP_PROTECT_ROUTE;
 
-  // publish loading icon
-  var [loading, setLoading] = React.useState(false);
   const navigate = useNavigate();
+
+  // CONTEXT
+  //  var { timer } = React.useContext(TimerContext);
+  var { handleSendPost, loading, handleTestMe, testMe } = React.useContext(
+    CreatePostSubmitContext
+  );
 
   // ============
   // uploadedFile
@@ -63,10 +70,10 @@ function Create() {
     navigate("/");
   }
 
+  var handleabc = handleTestMe(Math.random());
+
   async function handleSubmit(e) {
     e.preventDefault();
-
-    setLoading(true);
 
     // if time to read is empty
     var readTimeValue;
@@ -76,45 +83,36 @@ function Create() {
       readTimeValue = readTime;
     }
 
-    let formData = new FormData();
-    formData.append("title", title);
-    formData.append("date", date);
-    formData.append("readTime", readTime);
-    formData.append("description", description);
-    for (let i = 0; i < uploadedFile.length; i++) {
-      formData.append(`uploadedFile`, uploadedFile[i]);
-    }
-    // formData.append("uploadedFile", uploadedFile[0]);
-    formData.append("author", localStorage.getItem("user"));
-
-    const config = {
-      headers: { "content-type": "multipart/form-data" },
+    var post = {
+      title: title,
+      date: date,
+      readTime: readTimeValue,
+      description: description,
     };
 
-    var send = await axios.post(
-      `http://localhost:5000/${protectRoute}/posts/create`,
-      formData,
-      config
-    );
+    handleSendPost(post);
 
-    if (send["data"] === "Post created") {
-      setPostCreated("Post successfully created");
+    // if (send["data"] === "Post created") {
+    //   // Post created helper id
+    //   // no real data
+    //   setPostCreatedHelperId(Math.floor(Math.random() * 1000001));
 
-      // adding setTimeout
-      // setTimeout is asynchronous
-      setTimeout(function () {
-        setLoading(false);
-        setPostCreated(false);
-      }, 5000);
+    //   setPostCreated("Post successfully created");
 
-      // scroll window to top
-      window.scrollTo(0, 0);
+    //   // adding setTimeout
+    //   // setTimeout is asynchronous
+    //   setTimeout(function () {
+    //     setPostCreated(false);
+    //   }, 5000);
 
-      setTitle("");
-      setReadTime("");
-      setUploadedFile([]);
-      setDescription("");
-    }
+    //   // scroll window to top
+    //   window.scrollTo(0, 0);
+
+    //   setTitle("");
+    //   setReadTime("");
+    //   setUploadedFile([]);
+    //   setDescription("");
+    // }
   }
 
   React.useEffect(async function () {
@@ -128,8 +126,24 @@ function Create() {
     setDate(today);
   }, []);
 
+  console.log(testMe);
+
   return (
     <>
+      <button onClick={handleabc}>Clicccck</button>
+      {/* Notification for uploading files */}
+      {loading === true && (
+        <span style={{ position: "fixed", bottom: "0", right: "0" }}>
+          <Notification closeable>
+            <span style={{ marginRight: "10px" }}>
+              <Spinner size="20px" color="black" />
+            </span>
+            <span>Please wait...</span>
+          </Notification>
+        </span>
+      )}
+      {/* End, Notification for uploading files */}
+
       <Grid
         overrides={{
           Grid: {

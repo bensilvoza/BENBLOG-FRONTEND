@@ -17,6 +17,9 @@ import { Textarea } from "baseui/textarea";
 import { Input } from "baseui/input";
 import { Button, KIND } from "baseui/button";
 import { Notification } from "baseui/notification";
+import { Spinner } from "baseui/spinner";
+import { TimerContext } from "../../contexts/timerContext";
+import { CreatePostSubmitContext } from "../../contexts/createPostSubmitContext";
 
 function Posts() {
   var [posts, setPosts] = React.useState([]);
@@ -24,6 +27,10 @@ function Posts() {
   var [currentTitle, setCurrentTitle] = React.useState("");
   var [query, setQuery] = React.useState("");
   var [searchBox, setSearchBox] = React.useState(false);
+
+  // CONTEXT
+  //  var { timer } = React.useContext(TimerContext);
+  var { loading } = React.useContext(CreatePostSubmitContext);
 
   // protectRoute
   // Protecting the route from unathorized access
@@ -84,12 +91,26 @@ function Posts() {
   React.useEffect(async function () {
     // original address ==> "/"
     var getData = await axios.get(`http://localhost:5000/${protectRoute}`);
-
     setPosts(getData["data"]);
   }, []);
 
   return (
     <>
+      {/* Notification for uploading files */}
+      {loading === true && (
+        <span
+          style={{ position: "fixed", bottom: "0", right: "0", margin: "5px" }}
+        >
+          <Notification closeable>
+            <span style={{ marginRight: "10px" }}>
+              <Spinner size="20px" color="black" />
+            </span>
+            <span>Please wait...</span>
+          </Notification>
+        </span>
+      )}
+      {/* End, Notification for uploading files */}
+
       <Grid
         overrides={{
           Grid: {

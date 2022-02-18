@@ -10,12 +10,16 @@ import { FormControl } from "baseui/form-control";
 import { Input } from "baseui/input";
 import { Button, KIND } from "baseui/button";
 import { Notification } from "baseui/notification";
+import { TimerContext } from "../contexts/timerContext";
 
 function Login() {
   var [users, setUsers] = React.useState([]);
   var [email, setEmail] = React.useState("");
   var [password, setPassword] = React.useState("");
   var [accountRegistered, setAccountRegistered] = React.useState(false);
+
+  // CONTEXT
+  var { timer } = React.useContext(TimerContext);
 
   // protectRoute
   // Protecting the route from unathorized access
