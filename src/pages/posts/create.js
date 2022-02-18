@@ -26,7 +26,6 @@ function Create() {
   var [description, setDescription] = React.useState("");
   var [postCreated, setPostCreated] = React.useState(false);
   var [currentSelectedImage, setCurrentSelectedImage] = React.useState("");
-  var [postCreatedHelperId, setPostCreatedHelperId] = React.useState(null);
 
   // protectRoute
   // Protecting the route from unathorized access
@@ -37,9 +36,8 @@ function Create() {
 
   // CONTEXT
   //  var { timer } = React.useContext(TimerContext);
-  var { handleSendPost, loading, handleTestMe, testMe } = React.useContext(
-    CreatePostSubmitContext
-  );
+  var { handleSendPostMate, successMessage, progress, loading } =
+    React.useContext(CreatePostSubmitContext);
 
   // ============
   // uploadedFile
@@ -70,8 +68,6 @@ function Create() {
     navigate("/");
   }
 
-  var handleabc = handleTestMe(Math.random());
-
   async function handleSubmit(e) {
     e.preventDefault();
 
@@ -87,32 +83,15 @@ function Create() {
       title: title,
       date: date,
       readTime: readTimeValue,
+      uploadedFile: uploadedFile,
       description: description,
     };
 
-    handleSendPost(post);
-
-    // if (send["data"] === "Post created") {
-    //   // Post created helper id
-    //   // no real data
-    //   setPostCreatedHelperId(Math.floor(Math.random() * 1000001));
-
-    //   setPostCreated("Post successfully created");
-
-    //   // adding setTimeout
-    //   // setTimeout is asynchronous
-    //   setTimeout(function () {
-    //     setPostCreated(false);
-    //   }, 5000);
-
-    //   // scroll window to top
-    //   window.scrollTo(0, 0);
-
-    //   setTitle("");
-    //   setReadTime("");
-    //   setUploadedFile([]);
-    //   setDescription("");
-    // }
+    // mate of handleSendPost
+    // if function has a parameter
+    // save the function to a variable
+    // CONTEXT
+    handleSendPostMate(post);
   }
 
   React.useEffect(async function () {
@@ -126,11 +105,24 @@ function Create() {
     setDate(today);
   }, []);
 
-  console.log(testMe);
+  // CONTEXT
+  React.useEffect(
+    async function () {
+      if (successMessage === "Post successfully created") {
+        // scroll window to top
+        window.scrollTo(0, 0);
+
+        setTitle("");
+        setReadTime("");
+        setUploadedFile([]);
+        setDescription("");
+      }
+    },
+    [successMessage]
+  );
 
   return (
     <>
-      <button onClick={handleabc}>Clicccck</button>
       {/* Notification for uploading files */}
       {loading === true && (
         <span style={{ position: "fixed", bottom: "0", right: "0" }}>
@@ -138,7 +130,7 @@ function Create() {
             <span style={{ marginRight: "10px" }}>
               <Spinner size="20px" color="black" />
             </span>
-            <span>Please wait...</span>
+            <span>{progress}% Please wait...</span>
           </Notification>
         </span>
       )}
@@ -181,17 +173,14 @@ function Create() {
         }}
       >
         <Cell span={8}>
-          {postCreated && (
+          {successMessage && (
             <Notification
               overrides={{
                 Body: { style: { width: "auto" } },
               }}
               closeable
-              autoHideDuration={5000}
             >
-              {function () {
-                return "Post successfully created";
-              }}
+              {successMessage}
             </Notification>
           )}
         </Cell>
@@ -360,7 +349,7 @@ function Create() {
                       },
                     }}
                   />
-                  <span style={{ marginLeft: "5px" }}>Please wait</span>
+                  <span style={{ marginLeft: "5px" }}>Please wait...</span>
                 </>
               )}
             </Button>

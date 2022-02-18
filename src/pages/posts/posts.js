@@ -30,7 +30,7 @@ function Posts() {
 
   // CONTEXT
   //  var { timer } = React.useContext(TimerContext);
-  var { loading } = React.useContext(CreatePostSubmitContext);
+  var { loading, progress } = React.useContext(CreatePostSubmitContext);
 
   // protectRoute
   // Protecting the route from unathorized access
@@ -105,7 +105,7 @@ function Posts() {
             <span style={{ marginRight: "10px" }}>
               <Spinner size="20px" color="black" />
             </span>
-            <span>Please wait...</span>
+            <span>{progress}% Please wait...</span>
           </Notification>
         </span>
       )}
