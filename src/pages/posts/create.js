@@ -71,6 +71,10 @@ function Create() {
   async function handleSubmit(e) {
     e.preventDefault();
 
+    if (loading === true) {
+      return;
+    }
+
     // if time to read is empty
     var readTimeValue;
     if (readTime === "") {

@@ -18,8 +18,11 @@ import { Input } from "baseui/input";
 import { Button, KIND } from "baseui/button";
 import { Notification } from "baseui/notification";
 import { Spinner } from "baseui/spinner";
-import { TimerContext } from "../../contexts/timerContext";
+
+// CONTEXT
+// import { TimerContext } from "../../contexts/timerContext";
 import { CreatePostSubmitContext } from "../../contexts/createPostSubmitContext";
+import { LoginContext } from "../../contexts/loginContext";
 
 function Posts() {
   var [posts, setPosts] = React.useState([]);
@@ -31,6 +34,8 @@ function Posts() {
   // CONTEXT
   //  var { timer } = React.useContext(TimerContext);
   var { loading, progress } = React.useContext(CreatePostSubmitContext);
+  var { user, authenticated, handleUserMate, handleAuthenticated } =
+    React.useContext(LoginContext);
 
   // protectRoute
   // Protecting the route from unathorized access
@@ -62,6 +67,19 @@ function Posts() {
 
   function handleClickLogout() {
     localStorage.setItem("user", undefined);
+    // CONTEXT
+    // why save function to variable,
+    // to use the function as a storage
+    // not to execute, call or trigger
+    // the function
+    if (user !== undefined) {
+      // if no user is logged in
+      handleUserMate(undefined);
+      var handleAuthenticatedMateLocal = handleAuthenticated;
+      handleAuthenticatedMateLocal();
+    }
+    // END, CONTEXT
+
     navigate("/login");
   }
 
@@ -246,7 +264,7 @@ function Posts() {
                 }}
                 onMouseLeave={handleMouseLeave}
                 onClick={function () {
-                  return handleClickTitle(p["_id"]);
+                  handleClickTitle(p["_id"]);
                 }}
               >
                 {p["title"]}

@@ -11,11 +11,20 @@ import { Textarea } from "baseui/textarea";
 import { Input } from "baseui/input";
 import { Button, KIND } from "baseui/button";
 import { Notification } from "baseui/notification";
+import { Spinner } from "baseui/spinner";
+
+// CONTEXT
+// import { TimerContext } from "../../contexts/timerContext";
+import { CreatePostSubmitContext } from "../../contexts/createPostSubmitContext";
 
 function Post() {
   var [post, setPost] = React.useState({});
   var [currentImageIndex, setCurrentImageIndex] = React.useState(undefined);
   var { id } = useParams();
+
+  // CONTEXT
+  //  var { timer } = React.useContext(TimerContext);
+  var { loading, progress } = React.useContext(CreatePostSubmitContext);
 
   // protectRoute
   // Protecting the route from unathorized access
@@ -68,6 +77,21 @@ function Post() {
 
   return (
     <>
+      {/* Notification for uploading files */}
+      {loading === true && (
+        <span
+          style={{ position: "fixed", bottom: "0", right: "0", margin: "5px" }}
+        >
+          <Notification closeable>
+            <span style={{ marginRight: "10px" }}>
+              <Spinner size="20px" color="black" />
+            </span>
+            <span>{progress}% Please wait...</span>
+          </Notification>
+        </span>
+      )}
+      {/* End, Notification for uploading files */}
+
       <Grid
         overrides={{
           Grid: {

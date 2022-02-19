@@ -10,7 +10,10 @@ import { FormControl } from "baseui/form-control";
 import { Input } from "baseui/input";
 import { Button, KIND } from "baseui/button";
 import { Notification } from "baseui/notification";
-import { TimerContext } from "../contexts/timerContext";
+
+// CONTEXT
+import { LoginContext } from "../contexts/loginContext";
+//import { TimerContext } from "../contexts/timerContext";
 
 function Login() {
   var [users, setUsers] = React.useState([]);
@@ -19,7 +22,8 @@ function Login() {
   var [accountRegistered, setAccountRegistered] = React.useState(false);
 
   // CONTEXT
-  var { timer } = React.useContext(TimerContext);
+  // var { timer } = React.useContext(TimerContext);
+  var { handleUserMate, handleAuthenticated } = React.useContext(LoginContext);
 
   // protectRoute
   // Protecting the route from unathorized access
@@ -35,15 +39,35 @@ function Login() {
     navigate("/");
   }
 
+  /*
+  // if a function needs a parameter
+  function handleUserMateLocal(name){
+    handleUserMate(name);
+  }
+
+  <button onClick={function () {
+    handleUserMateLocal(Math.random());
+  }}> click me </button>
+  */
+
   function handleSubmit(e) {
     e.preventDefault();
     for (var i = 0; i < users.length; i++) {
       if (users[i]["email"] === email) {
         if (users[i]["password"] === md5(password)) {
           localStorage.setItem("user", users[i]["name"]);
-          return navigate("/");
+          // CONTEXT
+          // why save function to variable,
+          // to use the function as a storage
+          // not to execute, call or trigger
+          // the function
+          handleUserMate(users[i]["name"]);
+          var handleAuthenticatedMateLocal = handleAuthenticated;
+          handleAuthenticatedMateLocal();
+          // END, CONTEXT
+          navigate("/");
         } else {
-          return navigate("/login");
+          navigate("/login");
         }
       }
     }
