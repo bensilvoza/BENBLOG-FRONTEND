@@ -285,6 +285,19 @@ function Posts() {
       <br />
       <br />
       <br />
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          paddingTop: "50px",
+          paddingBottom: "50px",
+          backgroundColor: "#303846",
+        }}
+      >
+        <Paragraph1 as={"span"} color={"white"}>
+          Designed and built with all the love, @Ben
+        </Paragraph1>
+      </div>
     </>
   );
 }

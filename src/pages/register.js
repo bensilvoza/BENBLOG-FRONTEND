@@ -5,7 +5,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { Grid, Cell, ALIGNMENT } from "baseui/layout-grid";
 import { AppNavBar } from "baseui/app-nav-bar";
-import { H1 } from "baseui/typography";
+import { H1, Paragraph1 } from "baseui/typography";
 import { FormControl } from "baseui/form-control";
 import { Input } from "baseui/input";
 import { Button, KIND } from "baseui/button";
