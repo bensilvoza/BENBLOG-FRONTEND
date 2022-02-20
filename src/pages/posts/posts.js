@@ -273,7 +273,9 @@ function Posts() {
               <Paragraph2 color={"gray"} marginTop={"2px"} marginBottom={"2px"}>
                 {p["date"]} &#8226; {p["readTime"]}
               </Paragraph2>
-              <Label2>{p["description"].substr(0, 300)}</Label2>
+              <Label2>
+                {p["description"].replace(/<[^>]+>/g, "").substr(0, 300)}
+              </Label2>
               <br />
             </>
           ))}
@@ -289,14 +291,20 @@ function Posts() {
         style={{
           display: "flex",
           justifyContent: "center",
-          paddingTop: "50px",
-          paddingBottom: "50px",
-          backgroundColor: "#303846",
+          paddingBottom: "20px",
         }}
       >
-        <Paragraph1 as={"span"} color={"white"}>
-          Designed and built with all the love, @Ben
-        </Paragraph1>
+        <span
+          style={{
+            border: "1px solid gray",
+            padding: "20px",
+            borderRadius: "10px",
+          }}
+        >
+          <Paragraph1 as={"span"} color={"gray"}>
+            Designed and built with all the love, @Ben
+          </Paragraph1>
+        </span>
       </div>
     </>
   );

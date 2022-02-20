@@ -15,7 +15,11 @@ import { Button, KIND } from "baseui/button";
 import { Notification } from "baseui/notification";
 import { Spinner } from "baseui/spinner";
 
+// rich text editor
+import { Editor } from "@tinymce/tinymce-react";
+
 function Edit() {
+  var [postData, setPostData] = React.useState(null);
   var [title, setTitle] = React.useState("");
   var [date, setDate] = React.useState("");
   // time to read
@@ -29,10 +33,16 @@ function Edit() {
   var [postUpdated, setPostUpdated] = React.useState(false);
   var [currentSelectedImage, setCurrentSelectedImage] = React.useState("");
 
+  // ENV
   // protectRoute
   // Protecting the route from unathorized access
   // adding checkpoint in endpoint
   var protectRoute = process.env.REACT_APP_PROTECT_ROUTE;
+  // rich text editor
+  // Tiny Cloud
+  var tinyCloudKey = process.env.REACT_APP_TINYCLOUD_KEY;
+
+  // rich text editor
 
   // publish loading icon
   var [loading, setLoading] = React.useState(false);
@@ -78,6 +88,14 @@ function Edit() {
         return setUploadedFile(uploadedFileCreateCopy);
       }
     }
+  }
+
+  function handleClickCancel() {
+    return navigate("/post/" + id);
+  }
+
+  function handleClickBenblog() {
+    navigate("/");
   }
 
   async function handleSubmit(e) {
@@ -135,6 +153,7 @@ function Edit() {
       `http://localhost:5000/${protectRoute}/post/edit/` + id
     );
 
+    setPostData(getPost["data"]);
     setTitle(getPost["data"]["title"]);
     setDate(getPost["data"]["date"]);
     setReadTime(getPost["data"]["readTime"]);
@@ -142,11 +161,35 @@ function Edit() {
     setDescription(getPost["data"]["description"]);
   }, []);
 
-  console.log(uploadedFile);
+  console.log();
 
   return (
     <>
-      <AppNavBar title="BENBLOG" />
+      <Grid
+        overrides={{
+          Grid: {
+            style: {
+              display: "flex",
+              justifyContent: "center",
+            },
+          },
+        }}
+      >
+        <Cell span={8}>
+          <h1
+            style={{
+              cursor: "pointer",
+              marginBottom: "1px",
+              fontFamily: "Montserrat",
+              color: "gray",
+            }}
+            onClick={handleClickBenblog}
+          >
+            BENBLOG
+          </h1>
+        </Cell>
+      </Grid>
+
       {/* Notification */}
       <Grid
         overrides={{
@@ -189,7 +232,7 @@ function Edit() {
           }}
         >
           <Cell span={8}>
-            <H1>Create post</H1>
+            <H1>Edit post</H1>
             <FormControl label="Title">
               <Input
                 type="text"
@@ -345,16 +388,26 @@ function Edit() {
 
           <Cell span={8}>
             <FormControl label="Description">
-              <Textarea
-                overrides={{
-                  InputContainer: {
-                    style: {
-                      height: "500px",
-                    },
-                  },
-                }}
+              <Editor
+                apiKey={tinyCloudKey}
                 value={description}
-                onChange={(e) => setDescription(e.currentTarget.value)}
+                init={{
+                  height: 500,
+                  menubar: false,
+                  plugins: [
+                    "advlist autolink lists link image",
+                    "charmap print preview anchor help",
+                    "searchreplace visualblocks code",
+                    "insertdatetime media table paste wordcount",
+                  ],
+                  toolbar:
+                    "formatselect | bold italic | \
+            alignleft aligncenter alignright | \
+            bullist numlist outdent indent | undo redo | help",
+                }}
+                onEditorChange={(newValue) => {
+                  setDescription(newValue);
+                }}
               />
             </FormControl>
             <Button
@@ -366,6 +419,7 @@ function Edit() {
                 },
               }}
               kind={KIND.secondary}
+              onClick={handleClickCancel}
             >
               CANCEL
             </Button>

@@ -14,6 +14,10 @@ import { Button, KIND } from "baseui/button";
 import { Notification } from "baseui/notification";
 import { Spinner } from "baseui/spinner";
 
+// rich text editor
+import { Editor } from "@tinymce/tinymce-react";
+
+// CONTEXT
 import { CreatePostSubmitContext } from "../../contexts/createPostSubmitContext";
 
 function Create() {
@@ -27,11 +31,18 @@ function Create() {
   var [postCreated, setPostCreated] = React.useState(false);
   var [currentSelectedImage, setCurrentSelectedImage] = React.useState("");
 
+  // rich text editor
+
+  // ENV
   // protectRoute
   // Protecting the route from unathorized access
   // adding checkpoint in endpoint
   var protectRoute = process.env.REACT_APP_PROTECT_ROUTE;
+  // rich text editor
+  // Tiny Cloud
+  var tinyCloudKey = process.env.REACT_APP_TINYCLOUD_KEY;
 
+  // navigate ...
   const navigate = useNavigate();
 
   // CONTEXT
@@ -67,6 +78,8 @@ function Create() {
   function handleClickCancel() {
     navigate("/");
   }
+
+  // rich text editor
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -124,6 +137,8 @@ function Create() {
     },
     [successMessage]
   );
+
+  console.log(description);
 
   return (
     <>
@@ -309,17 +324,26 @@ function Create() {
 
           <Cell span={8}>
             <FormControl label="Description">
-              <Textarea
-                overrides={{
-                  InputContainer: {
-                    style: {
-                      height: "500px",
-                    },
-                  },
+              <Editor
+                apiKey={tinyCloudKey}
+                initialValue=""
+                init={{
+                  height: 500,
+                  menubar: false,
+                  plugins: [
+                    "advlist autolink lists link image",
+                    "charmap print preview anchor help",
+                    "searchreplace visualblocks code",
+                    "insertdatetime media table paste wordcount",
+                  ],
+                  toolbar:
+                    "formatselect | bold italic | \
+            alignleft aligncenter alignright | \
+            bullist numlist outdent indent | undo redo | help",
                 }}
-                required
-                value={description}
-                onChange={(e) => setDescription(e.currentTarget.value)}
+                onChange={function (e) {
+                  setDescription(e.target.getContent());
+                }}
               />
             </FormControl>
             <Button

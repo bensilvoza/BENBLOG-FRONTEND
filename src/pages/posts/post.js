@@ -13,6 +13,9 @@ import { Button, KIND } from "baseui/button";
 import { Notification } from "baseui/notification";
 import { Spinner } from "baseui/spinner";
 
+// HTML parser
+import parse from "html-react-parser";
+
 // CONTEXT
 // import { TimerContext } from "../../contexts/timerContext";
 import { CreatePostSubmitContext } from "../../contexts/createPostSubmitContext";
@@ -237,7 +240,7 @@ function Post() {
           }}
           span={8}
         >
-          <Paragraph1>{post["description"]}</Paragraph1>
+          <Paragraph1>{parse(String(post["description"]))}</Paragraph1>
         </Cell>
       </Grid>
 
