@@ -13,6 +13,7 @@ import { Notification } from "baseui/notification";
 
 // CONTEXT
 import { LoginContext } from "../contexts/loginContext";
+import { RegisterContext } from "../contexts/registerContext";
 //import { TimerContext } from "../contexts/timerContext";
 
 function Login() {
@@ -24,6 +25,7 @@ function Login() {
   // CONTEXT
   // var { timer } = React.useContext(TimerContext);
   var { handleUserMate, handleAuthenticated } = React.useContext(LoginContext);
+  var { accountCreated } = React.useContext(RegisterContext);
 
   // protectRoute
   // Protecting the route from unathorized access
@@ -56,6 +58,7 @@ function Login() {
       if (users[i]["email"] === email) {
         if (users[i]["password"] === md5(password)) {
           localStorage.setItem("user", users[i]["name"]);
+          localStorage.setItem("authenticated", true);
           // CONTEXT
           // why save function to variable,
           // to use the function as a storage
@@ -74,15 +77,15 @@ function Login() {
   }
 
   React.useEffect(async function () {
-    // one-way storing technique
-    // account succesfully registered
-    if (JSON.parse(localStorage.getItem("accountRegisteredHelper")) === true) {
-      setAccountRegistered(true);
-    } else {
-      setAccountRegistered(false);
-    }
-    localStorage.setItem("accountRegisteredHelper", false);
-    // end, account succesfully registered
+    // // one-way storing technique
+    // // account succesfully registered
+    // if (JSON.parse(localStorage.getItem("accountRegisteredHelper")) === true) {
+    //   setAccountRegistered(true);
+    // } else {
+    //   setAccountRegistered(false);
+    // }
+    // localStorage.setItem("accountRegisteredHelper", false);
+    // // end, account succesfully registered
 
     // communicate to backend and get all users
     // original address ==> "/register"
@@ -131,7 +134,7 @@ function Login() {
         }}
       >
         <Cell span={6}>
-          {accountRegistered && (
+          {accountCreated && (
             <Notification
               overrides={{
                 Body: { style: { width: "auto" } },

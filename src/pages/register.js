@@ -11,12 +11,18 @@ import { Input } from "baseui/input";
 import { Button, KIND } from "baseui/button";
 import { Notification } from "baseui/notification";
 
+// CONTEXT
+import { RegisterContext } from "../contexts/registerContext";
+
 function Register() {
   var [name, setName] = React.useState("");
   var [email, setEmail] = React.useState("");
   var [password, setPassword] = React.useState("");
   var [confirmPassword, setConfirmPassword] = React.useState("");
   var [errorMessage, setErrorMessage] = React.useState(false);
+
+  // CONTEXT
+  var { handleAccountCreated } = React.useContext(RegisterContext);
 
   // protectRoute
   // Protecting the route from unathorized access
@@ -79,8 +85,9 @@ function Register() {
       // message to localStorage
       localStorage.setItem("dontStoreSensitiveInformationInlocalStorage", true);
 
-      // one-way storing technique
-      localStorage.setItem("accountRegisteredHelper", true);
+      var handleAccountCreatedMate = handleAccountCreated;
+      // handle account created, mate
+      handleAccountCreatedMate();
 
       navigate("/login");
     }

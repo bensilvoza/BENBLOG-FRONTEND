@@ -9,25 +9,28 @@ import EditPost from "./pages/posts/edit";
 import TimerContextProvider from "./contexts/timerContext";
 import CreatePostSubmitContextProvider from "./contexts/createPostSubmitContext";
 import LoginContextProvider from "./contexts/loginContext";
+import RegisterContextProvider from "./contexts/registerContext";
 
 function App() {
   return (
     <div>
       <BrowserRouter>
-        <LoginContextProvider>
-          <CreatePostSubmitContextProvider>
-            <TimerContextProvider>
-              <Routes>
-                <Route exact path="/" element={<Posts />} />
-                <Route exact path="/login" element={<Login />} />
-                <Route exact path="/register" element={<Register />} />
-                <Route exact path="/posts/create" element={<CreatePost />} />
-                <Route exact path="/post/:id" element={<Post />} />
-                <Route exact path="/post/edit/:id" element={<EditPost />} />
-              </Routes>
-            </TimerContextProvider>
-          </CreatePostSubmitContextProvider>
-        </LoginContextProvider>
+        <RegisterContextProvider>
+          <LoginContextProvider>
+            <CreatePostSubmitContextProvider>
+              <TimerContextProvider>
+                <Routes>
+                  <Route exact path="/" element={<Posts />} />
+                  <Route exact path="/login" element={<Login />} />
+                  <Route exact path="/register" element={<Register />} />
+                  <Route exact path="/posts/create" element={<CreatePost />} />
+                  <Route exact path="/post/:id" element={<Post />} />
+                  <Route exact path="/post/edit/:id" element={<EditPost />} />
+                </Routes>
+              </TimerContextProvider>
+            </CreatePostSubmitContextProvider>
+          </LoginContextProvider>
+        </RegisterContextProvider>
       </BrowserRouter>
     </div>
   );

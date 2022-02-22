@@ -58,7 +58,7 @@ function Posts() {
   }
 
   function handleClickCreate() {
-    if (localStorage.getItem("user") === "undefined") {
+    if (user === undefined) {
       navigate("/login");
     } else {
       navigate("/posts/create");
@@ -66,7 +66,9 @@ function Posts() {
   }
 
   function handleClickLogout() {
+    // localStorage
     localStorage.setItem("user", undefined);
+    localStorage.setItem("authenticated", false);
     // CONTEXT
     // why save function to variable,
     // to use the function as a storage
@@ -158,7 +160,7 @@ function Posts() {
           <br />
           <div style={{ display: "flex" }}>
             <Avatar
-              name="Jane Doe"
+              name="Ben"
               size="scale1600"
               src="https://res.cloudinary.com/benblog-cloudinary/image/upload/v1644640435/BENBLOG/fznp3albdblpcr7qrc3h.jpg"
             />
