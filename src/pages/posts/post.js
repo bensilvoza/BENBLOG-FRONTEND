@@ -73,6 +73,47 @@ function Post() {
     navigate("/");
   }
 
+  function handleClickToggleHeart(heartId) {
+    if (user === undefined) {
+      setCommentError(true);
+
+      var executeScrollMate = executeScroll;
+      executeScrollMate();
+
+      // adding setTimeout
+      // setTimeout is asynchronous
+      setTimeout(function () {
+        return setCommentError(false);
+      }, 5000);
+
+      // terminate
+      return;
+    }
+
+    // itemId and heartId
+    // is just the same
+
+    // use spread operator
+    // if copy is needed
+    var commentsCopy = [...comments];
+    for (var i = 0; i < commentsCopy.length; i++) {
+      if (commentsCopy[i][0]["itemId"] == heartId) {
+        for (var j = 0; j < commentsCopy[i][0]["heartReactions"].length; j++) {
+          if (user === commentsCopy[i][0]["heartReactions"][j]) {
+            commentsCopy[i][0]["heartReactions"].splice(j, 1);
+            setComments(commentsCopy);
+            // terminate
+            return;
+          }
+        }
+        commentsCopy[i][0]["heartReactions"].push(user);
+        setComments(commentsCopy);
+        // terminate
+        return;
+      }
+    }
+  }
+
   function handleClickReply(parentCommentId) {
     if (parentCommentIdData === parentCommentId) {
       setParentCommentIdData("");
@@ -693,12 +734,36 @@ function Post() {
                           marginBottom: "5px",
                         }}
                       >
-                        <span style={{ marginRight: "30px", color: "gray" }}>
+                        <span
+                          onClick={function () {
+                            handleClickToggleHeart(c["itemId"]);
+                          }}
+                          style={{
+                            marginRight: "10px",
+                            color: "gray",
+                            cursor: "pointer",
+                          }}
+                        >
                           <i
                             style={{ color: "pink", fontSize: "20px" }}
-                            className="bi bi-heart-fill"
+                            className={
+                              c["heartReactions"].indexOf(user) >= 0
+                                ? "bi bi-heart-fill"
+                                : "bi bi-heart"
+                            }
                           ></i>
                         </span>
+                        {c["heartReactions"].length > 0 ? (
+                          <span
+                            style={{ marginRight: "15px", color: "lightgray" }}
+                          >
+                            {c["heartReactions"].length}
+                          </span>
+                        ) : (
+                          <span style={{ marginRight: "15px", color: "white" }}>
+                            0
+                          </span>
+                        )}
                         <span
                           onClick={function () {
                             handleClickReply(
@@ -773,6 +838,7 @@ function Post() {
                 body: comment,
                 user: user,
                 userPhoto: `https://avatars.dicebear.com/api/micah/${user}.svg`,
+                heartReactions: [],
               });
             }}
           >
