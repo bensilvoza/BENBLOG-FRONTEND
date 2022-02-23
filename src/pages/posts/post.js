@@ -101,16 +101,32 @@ function Post() {
     }
   }
 
+  function handleClickCancelEditComment() {
+    setEditCommentId("");
+    setComment("");
+  }
+
   function handleClickDeleteComment(itemId) {
     var commentsCopy = [];
+
     for (var i = 0; i < comments.length; i++) {
       var familyComment = [];
       for (var j = 0; j < comments[i].length; j++) {
+        // parent
+        if (
+          comments[i][j]["itemId"] == itemId &&
+          comments[i][j]["relationship"] == "parent"
+        ) {
+          break;
+        }
+        // child
         if (comments[i][j]["itemId"] !== itemId) {
           familyComment.push(comments[i][j]);
         }
       }
-      commentsCopy.push(familyComment);
+      if (familyComment.length !== 0) {
+        commentsCopy.push(familyComment);
+      }
     }
 
     setComments(commentsCopy);
@@ -484,7 +500,10 @@ function Post() {
                               >
                                 {c["itemId"] == editCommentId && (
                                   <span>
-                                    <span style={{ cursor: "pointer" }}>
+                                    <span
+                                      onClick={handleClickCancelEditComment}
+                                      style={{ cursor: "pointer" }}
+                                    >
                                       Cancel
                                     </span>
                                     <span
@@ -601,7 +620,10 @@ function Post() {
                               >
                                 {c["itemId"] == editCommentId && (
                                   <span>
-                                    <span style={{ cursor: "pointer" }}>
+                                    <span
+                                      onClick={handleClickCancelEditComment}
+                                      style={{ cursor: "pointer" }}
+                                    >
                                       Cancel
                                     </span>
                                     <span
