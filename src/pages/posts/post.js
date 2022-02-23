@@ -30,7 +30,7 @@ function Post() {
   // comment
   var [comment, setComment] = React.useState("");
   var [comments, setComments] = React.useState([]);
-  var [currentParentCommentId, setCurrentParentCommentId] = React.useState("");
+  var [parentCommentIdData, setParentCommentIdData] = React.useState("");
   var [childComment, setChildComment] = React.useState("");
   var [commentError, setCommentError] = React.useState(false);
   var [editCommentId, setEditCommentId] = React.useState("");
@@ -73,19 +73,71 @@ function Post() {
     navigate("/");
   }
 
-  function handleClickComment(commentId) {
-    if (commentId === currentParentCommentId) {
-      setCurrentParentCommentId("");
+  function handleClickReply(parentCommentId) {
+    if (parentCommentIdData === parentCommentId) {
+      setParentCommentIdData("");
     } else {
-      setCurrentParentCommentId(commentId);
+      setParentCommentIdData(parentCommentId);
     }
   }
 
   function handleClickEditComment(itemId) {
     if (editCommentId == itemId) {
       setEditCommentId("");
+      setComment("");
     } else {
       setEditCommentId(itemId);
+      for (var i = 0; i < comments.length; i++) {
+        var familyComment = comments[i];
+        for (var j = 0; j < familyComment.length; j++) {
+          if (familyComment[j]["itemId"] == itemId) {
+            setComment(familyComment[j]["body"]);
+
+            // terminate
+            return;
+          }
+        }
+      }
+    }
+  }
+
+  function handleClickDeleteComment(itemId) {
+    var commentsCopy = [];
+    for (var i = 0; i < comments.length; i++) {
+      var familyComment = [];
+      for (var j = 0; j < comments[i].length; j++) {
+        if (comments[i][j]["itemId"] !== itemId) {
+          familyComment.push(comments[i][j]);
+        }
+      }
+      commentsCopy.push(familyComment);
+    }
+
+    setComments(commentsCopy);
+  }
+
+  function handleClickEditCommentSave(itemId) {
+    // if edit comment is empty
+    if (comment == "") {
+      return;
+    }
+
+    // use spread operator
+    // if copy is needed
+    var commentsCopy = [...comments];
+    for (var i = 0; i < commentsCopy.length; i++) {
+      var familyComment = commentsCopy[i];
+      for (var j = 0; j < familyComment.length; j++) {
+        if (familyComment[j]["itemId"] == itemId) {
+          familyComment[j]["body"] = comment;
+          setEditCommentId("");
+          setComment("");
+          setComments(commentsCopy);
+
+          // terminate
+          return;
+        }
+      }
     }
   }
 
@@ -113,7 +165,6 @@ function Post() {
       // use spread operator
       var commentsCopy = [...comments];
       commentsCopy.push([commentData]);
-
       setComments(commentsCopy);
     } else {
       // create a copy
@@ -121,15 +172,19 @@ function Post() {
       var commentsCopy = [...comments];
 
       for (var i = 0; i < commentsCopy.length; i++) {
-        if (commentsCopy[i][0]["commentId"] === commentData["commentId"]) {
+        if (
+          commentsCopy[i][0]["parentCommentId"] ===
+          commentData["parentCommentId"]
+        ) {
           commentsCopy[i].push(commentData);
+          break;
         }
       }
       setComments(commentsCopy);
     }
     setComment("");
     setChildComment("");
-    setCurrentParentCommentId("");
+    setParentCommentIdData("");
   }
 
   React.useEffect(async function () {
@@ -427,15 +482,39 @@ function Post() {
                                   alignItems: "end",
                                 }}
                               >
+                                {c["itemId"] == editCommentId && (
+                                  <span>
+                                    <span style={{ cursor: "pointer" }}>
+                                      Cancel
+                                    </span>
+                                    <span
+                                      onClick={function () {
+                                        handleClickEditCommentSave(c["itemId"]);
+                                      }}
+                                      style={{
+                                        cursor: "pointer",
+                                        marginLeft: "15px",
+                                      }}
+                                    >
+                                      Save
+                                    </span>
+                                  </span>
+                                )}
                                 <span
                                   onClick={function () {
                                     handleClickEditComment(c["itemId"]);
                                   }}
-                                  style={{ cursor: "pointer" }}
+                                  style={{
+                                    cursor: "pointer",
+                                    marginLeft: "15px",
+                                  }}
                                 >
                                   <i className="bi bi-pen"></i>
                                 </span>
                                 <span
+                                  onClick={function () {
+                                    handleClickDeleteComment(c["itemId"]);
+                                  }}
                                   style={{
                                     marginLeft: "15px",
                                     cursor: "pointer",
@@ -457,7 +536,7 @@ function Post() {
                                 },
                               },
                             }}
-                            value={c["body"]}
+                            value={comment}
                             onChange={(e) => setComment(e.target.value)}
                           />
                         ) : (
@@ -520,15 +599,39 @@ function Post() {
                                   alignItems: "end",
                                 }}
                               >
+                                {c["itemId"] == editCommentId && (
+                                  <span>
+                                    <span style={{ cursor: "pointer" }}>
+                                      Cancel
+                                    </span>
+                                    <span
+                                      onClick={function () {
+                                        handleClickEditCommentSave(c["itemId"]);
+                                      }}
+                                      style={{
+                                        cursor: "pointer",
+                                        marginLeft: "15px",
+                                      }}
+                                    >
+                                      Save
+                                    </span>
+                                  </span>
+                                )}
                                 <span
                                   onClick={function () {
                                     handleClickEditComment(c["itemId"]);
                                   }}
-                                  style={{ cursor: "pointer" }}
+                                  style={{
+                                    cursor: "pointer",
+                                    marginLeft: "15px",
+                                  }}
                                 >
                                   <i className="bi bi-pen"></i>
                                 </span>
                                 <span
+                                  onClick={function () {
+                                    handleClickDeleteComment(c["itemId"]);
+                                  }}
                                   style={{
                                     marginLeft: "15px",
                                     cursor: "pointer",
@@ -550,7 +653,7 @@ function Post() {
                                   },
                                 },
                               }}
-                              value={c["body"]}
+                              value={comment}
                               onChange={(e) => setComment(e.target.value)}
                             />
                           ) : (
@@ -576,7 +679,9 @@ function Post() {
                         </span>
                         <span
                           onClick={function () {
-                            handleClickComment(commentArray[0]["commentId"]);
+                            handleClickReply(
+                              commentArray[0]["parentCommentId"]
+                            );
                           }}
                           style={{ color: "gray", cursor: "pointer" }}
                         >
@@ -586,13 +691,13 @@ function Post() {
                     )}
                   </span>
 
-                  {currentParentCommentId === commentArray[0]["commentId"] &&
+                  {parentCommentIdData === commentArray[0]["parentCommentId"] &&
                     c["relationship"] === "parent" && (
                       <form
                         onSubmit={function (e) {
                           handleSubmitComment(e, {
                             relationship: "child",
-                            commentId: commentArray[0]["commentId"],
+                            parentCommentId: commentArray[0]["parentCommentId"],
                             itemId: Math.round(Math.random() * 1000001),
                             body: childComment,
                             user: user,
@@ -641,7 +746,7 @@ function Post() {
             onSubmit={function (e) {
               handleSubmitComment(e, {
                 relationship: "parent",
-                commentId: Math.round(Math.random() * 1000001),
+                parentCommentId: Math.round(Math.random() * 1000001),
                 itemId: Math.round(Math.random() * 1000001),
                 body: comment,
                 user: user,

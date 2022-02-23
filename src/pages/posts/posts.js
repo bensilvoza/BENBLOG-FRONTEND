@@ -30,6 +30,7 @@ function Posts() {
   var [currentTitle, setCurrentTitle] = React.useState("");
   var [query, setQuery] = React.useState("");
   var [searchBox, setSearchBox] = React.useState(false);
+  var [searchError, setSearchError] = React.useState(false);
 
   // CONTEXT
   //  var { timer } = React.useContext(TimerContext);
@@ -101,11 +102,15 @@ function Posts() {
       if (postsCopy[i]["title"].toLowerCase().includes(query.toLowerCase())) {
         postsCopy.unshift(postsCopy[i]);
         postsCopy.splice(i + 1, 1);
-        break;
+        setSearchError(false);
+        setPosts(postsCopy);
+
+        // terminate
+        return;
       }
     }
 
-    setPosts(postsCopy);
+    setSearchError(true);
   }
 
   React.useEffect(async function () {
