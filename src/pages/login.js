@@ -61,8 +61,8 @@ function Login() {
           localStorage.setItem("authenticated", true);
           // CONTEXT
           // why save function to variable,
-          // to use the function as a storage
-          // not to execute, call or trigger
+          // to use the function as a storage,
+          // not to execute call or trigger
           // the function
           handleUserMate(users[i]["name"]);
           var handleAuthenticatedMateLocal = handleAuthenticated;
@@ -157,7 +157,7 @@ function Login() {
             style: {
               display: "flex",
               justifyContent: "center",
-              marginTop: "50px",
+              marginTop: "10px",
             },
           },
         }}

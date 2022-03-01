@@ -500,7 +500,8 @@ function Post() {
                       <p
                         style={{
                           marginBottom: "10px",
-                          marginTop: "80px",
+                          marginTop:
+                            c["firstParentComment"] == true ? "10px" : "80px",
                         }}
                       >
                         <p>
@@ -839,6 +840,7 @@ function Post() {
                 user: user,
                 userPhoto: `https://avatars.dicebear.com/api/micah/${user}.svg`,
                 heartReactions: [],
+                firstParentComment: comments.length == 0 ? true : false,
               });
             }}
           >

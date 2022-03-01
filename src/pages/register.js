@@ -19,7 +19,7 @@ function Register() {
   var [email, setEmail] = React.useState("");
   var [password, setPassword] = React.useState("");
   var [confirmPassword, setConfirmPassword] = React.useState("");
-  var [errorMessage, setErrorMessage] = React.useState(false);
+  var [errorMessage, setErrorMessage] = React.useState("no error");
 
   // CONTEXT
   var { handleAccountCreated } = React.useContext(RegisterContext);
@@ -44,7 +44,7 @@ function Register() {
       // adding setTimeout
       // setTimeout is asynchronous
       setTimeout(function () {
-        return setErrorMessage(false);
+        return setErrorMessage("no error");
       }, 10000);
 
       // terminate
@@ -58,7 +58,7 @@ function Register() {
       // adding setTimeout
       // setTimeout is asynchronous
       setTimeout(function () {
-        return setErrorMessage(false);
+        return setErrorMessage("no error");
       }, 10000);
 
       // terminate
@@ -136,17 +136,27 @@ function Register() {
         }}
       >
         <Cell span={6}>
-          {errorMessage !== false && (
-            <Notification
-              overrides={{
-                Body: { style: { width: "auto" } },
+          <Notification
+            overrides={{
+              Body: {
+                style: {
+                  width: "auto",
+
+                  visibility: errorMessage == "no error" ? "hidden" : "visible",
+                },
+              },
+            }}
+            closeable
+          >
+            <span
+              style={{
+                color:
+                  errorMessage == "no error" ? "rgb(239, 243, 254)" : "black",
               }}
-              closeable
-              autoHideDuration={10000}
             >
               {errorMessage}
-            </Notification>
-          )}
+            </span>
+          </Notification>
         </Cell>
       </Grid>
       {/* End of notification */}
@@ -157,7 +167,7 @@ function Register() {
             style: {
               display: "flex",
               justifyContent: "center",
-              marginTop: "50px",
+              marginTop: "10px",
             },
           },
         }}
